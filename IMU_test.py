@@ -4,7 +4,7 @@
 import sys
 sys.path.insert(0, '/opt/')
 from ICM20948 import *
-
+from matplotlib import pyplot
 #2. Import 'time' for time.sleep
 import time
 
@@ -36,56 +36,99 @@ while True:
         y_range = [10, 40]  # Range of possible Y values to display
         
         fig = plt.figure()
-        ax = fig.add_subplot(3, 1, 1)
-        ax2 = fig.add_subplot(3, 1, 2)  # rij 2 van 3
-        ax3 = fig.add_subplot(3, 1, 3)  # rij 3 van 3
-        line, = ax.plot(xs, ys)
-        # Subplot 1
-        ax.plot([1, 2, 3], [4, 5, 6], label='Lijn A')
-        ax.plot([1, 2, 3], [1, 2, 3], label='Lijn B')
-        ax.plot([1, 2, 3], [6, 4, 2], label='Lijn C')
-        ax.set_title('Subplot 1')
-        ax.legend()
-
-        # Subplot 2
-        ax2.plot([1, 2, 3], [2, 4, 1], label='Lijn D')
-        ax2.plot([1, 2, 3], [5, 3, 2], label='Lijn E')
-        ax2.plot([1, 2, 3], [3, 3, 3], label='Lijn F')
-        ax2.set_title('Subplot 2')
-        ax2.legend()
-
-        # Subplot 3
-        ax3.plot([1, 2, 3], [1, 4, 2], label='Lijn G')
-        ax3.plot([1, 2, 3], [2, 1, 3], label='Lijn H')
-        ax3.plot([1, 2, 3], [3, 2, 1], label='Lijn I')
-        ax3.set_title('Subplot 3')
-        ax3.legend()
+        ax = fig.add_subplot(4, 1, 1)
+        ax2 = fig.add_subplot(4, 1, 2)  # rij 2 van 3
+        ax3 = fig.add_subplot(4, 1, 3)  # rij 3 van 3
+        ax4 = fig.add_subplot(4, 1, 4)
 
         xs = list(range(0, 200))
-        ys = [0] * x_len
+        ys1 = [0] * x_len
+        ys2 = [0] * x_len
+        ys3 = [0] * x_len
+        ys4 = [0] * x_len
+        ys5 = [0] * x_len
+        ys6 = [0] * x_len
+        ys7 = [0] * x_len
+        ys8 = [0] * x_len
+        ys9 = [0] * x_len
+        ys10 = [0] * x_len
+        ys11 = [0] * x_len
+        ys12 = [0] * x_len
+
+        line_acc_x, = ax.plot(xs, ys1, label='acc_x')
+        line_acc_y, = ax.plot(xs, ys2, label='acc_y')
+        line_acc_z, = ax.plot(xs, ys3, label='acc_z')
+
+        line_pitch, = ax2.plot(xs, ys4, label='pitch')
+        line_roll, = ax2.plot(xs, ys5, label='roll')
+        line_yaw, = ax2.plot(xs, ys6, label='yaw')
+
+        line_mag_x, = ax3.plot(xs, ys7, label='mag_x')
+        line_mag_y, = ax3.plot(xs, ys8, label='mag_y')
+        line_mag_z, = ax3.plot(xs, ys9, label='mag_z')
+
+        line_gyro_x, = ax4.plot(xs, ys10, label='gyro_x')
+        line_gyro_y, = ax4.plot(xs, ys11, label='gyro_y')
+        line_gyro_z, = ax4.plot(xs, ys12, label='gyro_z')
         ax.set_ylim(y_range)
         ax2.set_ylim(y_range)
         ax3.set_ylim(y_range)
-        def animate(i, ys):
+        ax4.set_ylim(y_range)
+        def animate(i):
+            # Add y to list
+            ys1.append(Accel[0])
+            ys1[:] = ys1[-x_len:]
+            line_acc_x.set_ydata(ys1)
 
-          # Read temperature (Celsius) from TMP102
-            temp_c = round(tmp102.read_temp(), 2)
+            ys2.append(Accel[1])
+            ys2[:] = ys2[-x_len:]
+            line_acc_y.set_ydata(ys2)
 
-         # Add y to list
-            ys.append(temp_c)
+            ys3.append(Accel[2])
+            ys3[:] = ys3[-x_len:]
+            line_acc_z.set_ydata(ys3)
 
-          # Limit y list to set number of items
-            ys = ys[-x_len:]
+            ys4.append(pitch)
+            ys4[:] = ys4[-x_len:]
+            line_pitch.set_ydata(ys4)
 
-          # Update line with new Y values
-            line.set_ydata(ys)
+            ys5.append(roll)
+            ys5[:] = ys5[-x_len:]
+            line_roll.set_ydata(ys5)
 
-            return line,
+            ys6.append(yaw)
+            ys6[:] = ys6[-x_len:]
+            line_yaw.set_ydata(ys6)
 
-# Set up plot to call animate() function periodically
+            ys7.append(Mag[0])
+            ys7[:] = ys7[-x_len:]
+            line_mag_x.set_ydata(ys7)
+
+            ys8.append(Mag[1])
+            ys8[:] = ys8[-x_len:]
+            line_mag_y.set_ydata(ys8)
+
+            ys9.append(Mag[2])
+            ys9[:] = ys9[-x_len:]
+            line_mag_z.set_ydata(ys9)
+
+            ys10.append(Gyro[0])
+            ys10[:] = ys10[-x_len:]
+            line_gyro_x.set_ydata(ys10)
+
+            ys11.append(Gyro[1])
+            ys11[:] = ys11[-x_len:]
+            line_gyro_y.set_ydata(ys11)
+
+            ys12.append(Gyro[2])
+            ys12[:] = ys12[-x_len:]
+            line_gyro_z.set_ydata(ys12)
+
+            return line_acc_x, line_acc_y, line_acc_z, line_pitch, line_roll, line_yaw, line_mag_x, line_mag_y, line_mag_z, line_gyro_x, line_gyro_y, line_gyro_z,
+
+            # Set up plot to call animate() function periodically
         ani = animation.FuncAnimation(fig,
             animate,
-            fargs=(ys,),
             interval=50,
             blit=True)
         plt.show()

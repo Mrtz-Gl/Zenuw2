@@ -1,5 +1,7 @@
 # Import necessary packages
 # 1. Import the ICM20948.py file and make sure this file can be found
+import time
+import csv
 import sys
 import math
 import matplotlib.pyplot as plt
@@ -45,7 +47,7 @@ for ax, label, keys in [
     (ax_mag, 'Magnetometer (µT)', ['Mag[0]', 'Mag[1]', 'Mag[2]']),
 ]:
     ax.set_title(label)
-    ax.set_ylim(-3000, 3000)
+    ax.set_ylim(-100, 100)
     ax.set_xlim(0, MAX_POINTS)
     ax.grid(True)
     for key in keys:
@@ -69,6 +71,12 @@ ax_orientation.legend()
 
 sys.path.insert(0, '/opt/')
 
+fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX", "GyroY", "GyroZ", "MagX", "MagY", "MagZ"]
+
+csvfile = open('data.csv', 'w', newline='')
+csvwriter= csv.writer('data.csv')
+csvwriter.writerow(fields)
+
 def get_imu_data():
     icm20948.icm20948_Gyro_Accel_Read()
     icm20948.icm20948MagRead()
@@ -90,8 +98,24 @@ def get_imu_data():
 print("\nSense HAT Test Program ...\n")
 icm20948=ICM20948()
 
+def get_program_time():
+    starttime = time.time()
+    programtime = starttime - time.time()
+    return programtime
+
+def write_csv(programtime, imu):
+    row = [programtime]
+    for key, value in imu.items:
+        row.append(value)
+    csv.writerow(row)
+    
+
+        
+
 def update_plot(frame):
     imu = get_imu_data()
+    programtime = get_program_time()
+    write_csv(programtime, imu)
     # Get the values from icm20948
     
     for i in range(3):
@@ -135,13 +159,10 @@ def update_plot(frame):
     orientation_lines['z'] = ax_orientation.quiver(*origin.flatten(), *z_axis.flatten(), color='b')
 
     return list(lines.values()) + list(orientation_lines.values())
-
-    print("\r\n /-------------------------------------------------------------/ \r\n")
-    print('\r\n Roll = %.2f , Pitch = %.2f , Yaw = %.2f\r\n'%(roll,pitch,yaw))
-    print('\r\nAcceleration:  X = %d , Y = %d , Z = %d\r\n'%(Accel[0],Accel[1],Accel[2]))  
-    print('\r\nGyroscope:     X = %d , Y = %d , Z = %d\r\n'%(Gyro[0],Gyro[1],Gyro[2]))
-    print('\r\nMagnetic:      X = %d , Y = %d , Z = %d'%((Mag[0]),Mag[1],Mag[2]))
-    
-ani = animation.FuncAnimation(fig, update_plot, interval=UPDATE_INTERVAL_MS, blit=False)
-plt.tight_layout()
-plt.show()
+try:
+    ani = animation.FuncAnimation(fig, update_plot, interval=UPDATE_INTERVAL_MS, blit=False)
+    plt.tight_layout()
+    plt.show()
+except(KeyboardInterrupt):
+    print("\n === INTERRUPTED ===")
+    csvfile.close()

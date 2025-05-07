@@ -138,3 +138,6 @@ def update_plot(frame):
     print('\r\nGyroscope:     X = %d , Y = %d , Z = %d\r\n'%(Gyro[0],Gyro[1],Gyro[2]))
     print('\r\nMagnetic:      X = %d , Y = %d , Z = %d'%((Mag[0]),Mag[1],Mag[2]))
     
+ani = animation.FuncAnimation(fig, update_plot, interval=UPDATE_INTERVAL_MS, blit=False)
+plt.tight_layout()
+plt.show()

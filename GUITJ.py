@@ -45,7 +45,7 @@ for ax, label, keys in [
     (ax_mag, 'Magnetometer (µT)', ['Mag[0]', 'Mag[1]', 'Mag[2]']),
 ]:
     ax.set_title(label)
-    ax.set_ylim(-100, 100)
+    ax.set_ylim(-3000, 3000)
     ax.set_xlim(0, MAX_POINTS)
     ax.grid(True)
     for key in keys:
@@ -60,9 +60,9 @@ orientation_lines = {
     'y': ax_orientation.quiver(0, 0, 0, 0, 1, 0, color='g', label='Y'),
     'z': ax_orientation.quiver(0, 0, 0, 0, 0, 1, color='b', label='Z')
 }
-ax_orientation.set_xlim([-1, 1])
-ax_orientation.set_ylim([-1, 1])
-ax_orientation.set_zlim([-1, 1])
+ax_orientation.set_xlim([-180, 180])
+ax_orientation.set_ylim([-180, 180])
+ax_orientation.set_zlim([-180, 180])
 ax_orientation.set_title("Orientation (Yaw, Pitch, Roll)")
 ax_orientation.set_box_aspect([1, 1, 1])
 ax_orientation.legend()

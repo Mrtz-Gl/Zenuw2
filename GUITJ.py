@@ -8,6 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import time
 from collections import deque
 import numpy as np
+sys.path.insert(0, '/opt/')
 from ICM20948 import *
 
 # Constants

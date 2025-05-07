@@ -105,7 +105,7 @@ def get_program_time():
 
 def write_csv(programtime, imu):
     row = [programtime]
-    for key, value in imu.items:
+    for key, value in imu.items():
         row.append(value)
     csv.writerow(row)
     

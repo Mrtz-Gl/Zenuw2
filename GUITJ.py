@@ -83,9 +83,9 @@ def get_imu_data():
     return {'roll': roll,
             'pitch': pitch,
             'yaw': yaw,
-            'accel': [Accel[0],Accel[1],Accel[2]],
-            'gyro':[Gyro[0],Gyro[1],Gyro[2]],
-            'mag': [Mag[0],Mag[1],Mag[2]]}
+            'Accel': [Accel[0],Accel[1],Accel[2]],
+            'Gyro':[Gyro[0],Gyro[1],Gyro[2]],
+            'Mag': [Mag[0],Mag[1],Mag[2]]}
 
 print("\nSense HAT Test Program ...\n")
 icm20948=ICM20948()

@@ -74,7 +74,7 @@ sys.path.insert(0, '/opt/')
 fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX", "GyroY", "GyroZ", "MagX", "MagY", "MagZ"]
 
 csvfile = open('data.csv', 'w', newline='')
-csvwriter= csv.writer('data.csv')
+csvwriter= csv.writer('data.csv', delimiter=',')
 csvwriter.writerow(fields)
 
 def get_imu_data():

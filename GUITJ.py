@@ -94,10 +94,10 @@ def update_plot(frame):
     imu = get_imu_data()
     # Get the values from icm20948
     
-    for i, axis in enumerate(['x', 'y', 'z']):
-        data_buffer[f'accel_{axis}'].append(imu['accel'][i])
-        data_buffer[f'gyro_{axis}'].append(imu['gyro'][i])
-        data_buffer[f'mag_{axis}'].append(imu['mag'][i])
+    for i in range(3):
+        data_buffer[f'Accel[{i}]'].append(imu['Accel'][i])
+        data_buffer[f'Gyro[{i}]'].append(imu['Gyro'][i])
+        data_buffer[f'Mag[{i}]'].append(imu['Mag'][i])
 
     for key, line in lines.items():
         line.set_data(range(len(data_buffer[key])), data_buffer[key])

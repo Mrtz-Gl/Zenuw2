@@ -15,17 +15,17 @@ from ICM20948 import *
 MAX_POINTS = 100
 UPDATE_INTERVAL_MS = 100
 
-# Buffers for time series plots
+# Buffers for time series plots. #x:0, y:1, z:2
 data_buffer = {
-    'accel_x': deque(maxlen=MAX_POINTS),
-    'accel_y': deque(maxlen=MAX_POINTS),
-    'accel_z': deque(maxlen=MAX_POINTS),
-    'gyro_x': deque(maxlen=MAX_POINTS),
-    'gyro_y': deque(maxlen=MAX_POINTS),
-    'gyro_z': deque(maxlen=MAX_POINTS),
-    'mag_x': deque(maxlen=MAX_POINTS),
-    'mag_y': deque(maxlen=MAX_POINTS),
-    'mag_z': deque(maxlen=MAX_POINTS),
+    'Accel[0]': deque(maxlen=MAX_POINTS),
+    'Accel[1]': deque(maxlen=MAX_POINTS),
+    'Accel[2]': deque(maxlen=MAX_POINTS),
+    'Gyro[0]': deque(maxlen=MAX_POINTS),
+    'Gyro[1]': deque(maxlen=MAX_POINTS),
+    'Gyro[2]': deque(maxlen=MAX_POINTS),
+    'Mag[0]': deque(maxlen=MAX_POINTS),
+    'Mag[1]': deque(maxlen=MAX_POINTS),
+    'Mag[2]': deque(maxlen=MAX_POINTS),
 }
 # Set up figure and axes
 fig = plt.figure(figsize=(12, 10))
@@ -106,6 +106,10 @@ def update_plot(frame):
     for artist in orientation_lines.values():
         artist.remove()
         
+    roll = imu['roll']
+    pitch = imu['pitch']
+    yaw = imu['yaw']
+
     # Rotation matrices
     R_x = np.array([[1, 0, 0],
                     [0, np.cos(roll), -np.sin(roll)],

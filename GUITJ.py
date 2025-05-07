@@ -73,9 +73,13 @@ sys.path.insert(0, '/opt/')
 
 fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX", "GyroY", "GyroZ", "MagX", "MagY", "MagZ"]
 
-csvfile = open('data.csv', 'w', newline='')
-csvwriter= csv.writer(csvfile)
-csvwriter.writerow(fields)
+# csvfile = open('data.csv', 'w', newline='')
+# csvwriter= csv.writer(csvfile)
+# csvwriter.writerow(fields)
+
+with open('data.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(fields)
 
 def get_imu_data():
     icm20948.icm20948_Gyro_Accel_Read()
@@ -107,11 +111,13 @@ def write_csv(programtime, imu):
     row = [programtime]
     for key, value in imu.items():
         row.append(value)
-    csv.writerow(row)
-    
-
+    # csv.writerow(row)
         
+    with open('data.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(row)
 
+    
 def update_plot(frame):
     imu = get_imu_data()
     programtime = get_program_time()
@@ -165,4 +171,3 @@ try:
     plt.show()
 except(KeyboardInterrupt):
     print("\n === INTERRUPTED ===")
-    csvfile.close()

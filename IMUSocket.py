@@ -23,7 +23,6 @@ fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX",
 
 def get_imu_data():
     icm20948.icm20948_Gyro_Accel_Read()
-    icm20948.icm20948MagRead()
     icm20948.icm20948CalAvgValue()
     
     q0, q1, q2, q3 = icm20948.imuAHRSupdate(MotionVal[0] * 0.0175, MotionVal[1] * 0.0175,MotionVal[2] * 0.0175,
@@ -36,8 +35,7 @@ def get_imu_data():
             'pitch': pitch,
             'yaw': yaw,
             'Accel': [Accel[0],Accel[1],Accel[2]],
-            'Gyro':[Gyro[0],Gyro[1],Gyro[2]],
-            'Mag': [Mag[0],Mag[1],Mag[2]]}
+            'Gyro':[Gyro[0],Gyro[1],Gyro[2]]}
 
 print("\nSense HAT Test Program ...\n")
 icm20948=ICM20948()
@@ -63,7 +61,7 @@ def main():
             imu = get_imu_data()
             programtime = get_program_time()
             send_over_socket(programtime, imu)
-            time.sleep(1)
+            time.sleep(0.01)
 
         except(KeyboardInterrupt):
             print("\n === INTERRUPTED ===")

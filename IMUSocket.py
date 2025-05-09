@@ -21,8 +21,13 @@ fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX",
 # csvwriter.writerow(fields)
 
 def get_imu_data():
+    print(get_program_time())
     icm20948.icm20948_Gyro_Accel_Read()
+    print(get_program_time())
     icm20948.icm20948MagRead()
+    print(get_program_time())
+    icm20948.icm20948CalAvgValue()
+    print(get_program_time())
     
     q0, q1, q2, q3 = icm20948.imuAHRSupdate(MotionVal[0] * 0.0175, MotionVal[1] * 0.0175,MotionVal[2] * 0.0175,
                 MotionVal[3],MotionVal[4],MotionVal[5], 
@@ -42,10 +47,10 @@ icm20948=ICM20948()
 
 def get_program_time():
     programtime = time.time() - starttime 
+    print(programtime)
     return int(programtime*1000)
 
 def send_over_socket(programtime, imu):
-    print(programtime)
     row = f"{programtime}"
     for key, value in imu.items():
         row += f", {value}"
@@ -61,7 +66,7 @@ def main():
             imu = get_imu_data()
             programtime = get_program_time()
             send_over_socket(programtime, imu)
-            time.sleep(0.01)
+            time.sleep(1)
 
         except(KeyboardInterrupt):
             print("\n === INTERRUPTED ===")

@@ -16,7 +16,7 @@ starttime = time.time()
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX", "GyroY", "GyroZ", "MagX", "MagY", "MagZ"]
-
+print(dir(icm20948))
 # csvfile = open('data.csv', 'w', newline='')
 # csvwriter= csv.writer(csvfile)
 # csvwriter.writerow(fields)
@@ -25,13 +25,14 @@ def get_imu_data():
     icm20948.icm20948_Gyro_Accel_Read()
     icm20948.icm20948CalAvgValue()
     
-    q0, q1, q2, q3 = icm20948.imu6DOFAHRSupdate(
+    q0, q1, q2, q3 = icm20948.imuAHRSupdate(
         MotionVal[0] * 0.0175,  # gx in rad/s
         MotionVal[1] * 0.0175,  # gy in rad/s
         MotionVal[2] * 0.0175,  # gz in rad/s
         MotionVal[3],           # ax
         MotionVal[4],           # ay
-        MotionVal[5]            # az
+        MotionVal[5],            # az
+        0,0,0 #mag data
     )   
     pitch = math.asin(-2 * q1 * q3 + 2 * q0* q2)* 57.3
     roll  = math.atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2* q2 + 1)* 57.3

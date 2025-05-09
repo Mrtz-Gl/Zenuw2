@@ -16,7 +16,6 @@ starttime = time.time()
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX", "GyroY", "GyroZ", "MagX", "MagY", "MagZ"]
-print(dir(icm20948))
 # csvfile = open('data.csv', 'w', newline='')
 # csvwriter= csv.writer(csvfile)
 # csvwriter.writerow(fields)

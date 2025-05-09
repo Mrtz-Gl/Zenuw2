@@ -23,7 +23,6 @@ fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX",
 def get_imu_data():
     icm20948.icm20948_Gyro_Accel_Read()
     icm20948.icm20948MagRead()
-    icm20948.icm20948CalAvgValue()
     
     q0, q1, q2, q3 = icm20948.imuAHRSupdate(MotionVal[0] * 0.0175, MotionVal[1] * 0.0175,MotionVal[2] * 0.0175,
                 MotionVal[3],MotionVal[4],MotionVal[5], 

@@ -21,7 +21,7 @@ fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX",
 # csvwriter.writerow(fields)
 
 def get_imu_data():
-    print(get_program_time())
+    print(f"{get_program_time()} start")
     icm20948.icm20948_Gyro_Accel_Read()
     print(get_program_time())
     icm20948.icm20948MagRead()

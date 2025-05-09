@@ -12,7 +12,7 @@ from ICM20948 import *
 
 UDP_IP = "172.19.12.67"  # Replace with your laptop's IP
 UDP_PORT = 5005
-
+starttime = time.time()
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 fields = ["Time", "roll", "pitch", "yaw", "AccelX", "AccelY", "AccelZ", "GyroX", "GyroY", "GyroZ", "MagX", "MagY", "MagZ"]
@@ -43,9 +43,8 @@ print("\nSense HAT Test Program ...\n")
 icm20948=ICM20948()
 
 def get_program_time():
-    starttime = time.time()
-    programtime = starttime - time.time()
-    return programtime
+    programtime = time.time() - starttime 
+    return int(programtime*1000)
 
 def send_over_socket(programtime, imu):
     print(programtime)

@@ -57,7 +57,7 @@ def send_over_socket(programtime, imu):
     
 
     
-def main(frame):
+def main():
     while(True):
         try:
             imu = get_imu_data()
@@ -68,3 +68,5 @@ def main(frame):
         except(KeyboardInterrupt):
             print("\n === INTERRUPTED ===")
             break
+        
+main()

@@ -52,6 +52,7 @@ def send_over_socket(programtime, imu):
     row = f"p{programtime}"
     for key, value in imu.items():
         row += f", {value}"
+    print(row)
     UDPMessage = sock.sendto(row.encode(), (UDP_IP, UDP_PORT))
     
     

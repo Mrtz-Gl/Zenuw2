@@ -48,8 +48,8 @@ def get_program_time():
     return programtime
 
 def send_over_socket(programtime, imu):
-    
-    row = f"p{programtime}"
+    print(programtime)
+    row = f"{programtime}"
     for key, value in imu.items():
         row += f", {value}"
     print(row)
@@ -64,7 +64,7 @@ def main():
             imu = get_imu_data()
             programtime = get_program_time()
             send_over_socket(programtime, imu)
-            time.sleep(0.01)
+            time.sleep(1)
 
         except(KeyboardInterrupt):
             print("\n === INTERRUPTED ===")

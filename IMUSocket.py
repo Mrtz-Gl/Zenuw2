@@ -25,9 +25,14 @@ def get_imu_data():
     icm20948.icm20948_Gyro_Accel_Read()
     icm20948.icm20948CalAvgValue()
     
-    q0, q1, q2, q3 = icm20948.imuAHRSupdate(MotionVal[0] * 0.0175, MotionVal[1] * 0.0175,MotionVal[2] * 0.0175,
-                MotionVal[3],MotionVal[4],MotionVal[5], 
-                MotionVal[6], MotionVal[7], MotionVal[8])      
+    q0, q1, q2, q3 = icm20948.imu6DOFAHRSupdate(
+        MotionVal[0] * 0.0175,  # gx in rad/s
+        MotionVal[1] * 0.0175,  # gy in rad/s
+        MotionVal[2] * 0.0175,  # gz in rad/s
+        MotionVal[3],           # ax
+        MotionVal[4],           # ay
+        MotionVal[5]            # az
+    )   
     pitch = math.asin(-2 * q1 * q3 + 2 * q0* q2)* 57.3
     roll  = math.atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2* q2 + 1)* 57.3
     yaw   = math.atan2(-2 * q1 * q2 - 2 * q0 * q3, 2 * q2 * q2 + 2 * q3 * q3 - 1) * 57.3
@@ -35,7 +40,8 @@ def get_imu_data():
             'pitch': pitch,
             'yaw': yaw,
             'Accel': [Accel[0],Accel[1],Accel[2]],
-            'Gyro':[Gyro[0],Gyro[1],Gyro[2]]}
+            'Gyro':[Gyro[0],Gyro[1],Gyro[2]]
+    }
 
 print("\nSense HAT Test Program ...\n")
 icm20948=ICM20948()

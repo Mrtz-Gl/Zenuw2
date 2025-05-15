@@ -14,7 +14,7 @@ ACCEL_XOUT_H = 0x3B
 GYRO_XOUT_H = 0x43
 
 # Setup: Initialize each MPU on each bus
-i2c_buses = [1, 2]  # /dev/i2c-0 and /dev/i2c-1
+i2c_buses = [0, 1]  # /dev/i2c-0 and /dev/i2c-1
 mpus = []
 
 # Wake up MPUs

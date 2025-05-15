@@ -6,7 +6,7 @@ UDP_IP = "192.168.178.63"  # Replace with your laptop's IP
 UDP_PORT = 5005
 starttime = time.time()
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
+starttime = time.time()
 # MPU Registers
 MPU_ADDRS = [0x68, 0x69]
 PWR_MGMT_1 = 0x6B
@@ -37,7 +37,6 @@ def read_word(bus, addr, reg):
     return val
 
 def get_program_time():
-    starttime = time.time()
     programtime = starttime - time.time()
     return programtime
 

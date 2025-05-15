@@ -66,6 +66,5 @@ try:
             
             
         print("---")
-        time.sleep(1)
 except KeyboardInterrupt:
     print("Stopping...")

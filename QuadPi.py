@@ -72,5 +72,5 @@ except KeyboardInterrupt:
     print("Stopping...")
 finally:
 # Always close the buses when done
-for bus in buses.values():
+    for bus in buses.values():
     bus.close()

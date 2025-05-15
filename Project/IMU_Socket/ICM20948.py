@@ -377,7 +377,22 @@ class ICM20948(object):
     MotionVal[6]=Mag[0]
     MotionVal[7]=Mag[1]
     MotionVal[8]=Mag[2]
-    
+  ### IMU LAB-B ###
+  def set_gyro_rate(self, rate_hz):
+    """Sets the sampling rate of the Gyro to the provide rate_hz"""
+    # Calculates the divider value to be used (ex: 0x09 for 100Hz)
+    divider = int(10000 / rate_hz) - 1
+    # Rewrites the divider value
+    self._write_byte(REG_ADD_GYRO_SMPLRT_DIV, divider)
+
+  def set_accel_rate(self, rate_hz):
+    """Sets the sampling rate of the Accelerator to the provide rate_hz"""
+    # Calculates the divider value to be used (ex: 0x09 for 100Hz)
+    divider = int(10000 / rate_hz) - 1
+    # Rewrites the divider value
+    self._write_byte( REG_ADD_ACCEL_SMPLRT_DIV_2,  divider)
+  
+
 if __name__ == '__main__':
   import time
   print("\nSense HAT Test Program ...\n")

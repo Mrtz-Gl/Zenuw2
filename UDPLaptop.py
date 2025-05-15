@@ -8,6 +8,11 @@ sock.bind((UDP_IP, UDP_PORT))
 
 print(f"Listening for UDP messages on port {UDP_PORT}...")
 
-while True:
-    data, addr = sock.recvfrom(1024)
-    print(f"Received from {addr}: {data.decode()}")
+try:
+    while True:
+        data, addr = sock.recvfrom(1024)
+        i2caddr, bus_num, programtime, ax, ay, az, gx, gy, gz = data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8]
+        print(f"Received from {addr}: {data.decode()}")
+except KeyboardInterrupt:
+        print("Stopping")
+    

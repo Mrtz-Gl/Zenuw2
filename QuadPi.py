@@ -73,4 +73,4 @@ except KeyboardInterrupt:
 finally:
 # Always close the buses when done
     for bus in buses.values():
-    bus.close()
+        bus.close()

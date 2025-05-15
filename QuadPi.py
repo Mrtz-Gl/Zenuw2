@@ -47,11 +47,13 @@ def send_over_socket(programtime, imu):
     print(row)
     UDPMessage = sock.sendto(row.encode(), (UDP_IP, UDP_PORT))
 
+buses = {bus_num: SMBus(bus_num) for bus_num, _ in mpus}
+
 # Main loop
 try:
     while True:
         for bus_num, addr in mpus:
-            bus = SMBus(bus_num)
+            bus = buses[bus_num]  # reuse opened bus
             ax = read_word(bus, addr, ACCEL_XOUT_H)
             ay = read_word(bus, addr, ACCEL_XOUT_H + 2)
             az = read_word(bus, addr, ACCEL_XOUT_H + 4)
@@ -68,3 +70,7 @@ try:
         print("---")
 except KeyboardInterrupt:
     print("Stopping...")
+finally:
+# Always close the buses when done
+for bus in buses.values():
+    bus.close()

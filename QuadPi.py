@@ -60,14 +60,12 @@ try:
             gx = read_word(bus, addr, GYRO_XOUT_H)
             gy = read_word(bus, addr, GYRO_XOUT_H + 2)
             gz = read_word(bus, addr, GYRO_XOUT_H + 4)
-            print(f"Bus {bus_num}, Addr 0x{addr:02X} | Accel: ({ax}, {ay}, {az}) | Gyro: ({gx}, {gy}, {gz})")
             programtime = get_program_time()
             datasend = f"{addr}, {bus_num}, {programtime}, {ax}, {ay}, {az}, {gx}, {gy}, {gz}"
 
             UDPMessage = sock.sendto(datasend.encode(), (UDP_IP, UDP_PORT))
             
             
-        print("---")
 except KeyboardInterrupt:
     print("Stopping...")
 finally:

@@ -2,7 +2,7 @@ from smbus2 import SMBus
 import time
 import socket
 
-UDP_IP = "192.168.178.63"  # Replace with your laptop's IP
+UDP_IP = "192.168.18.223"  # Replace with your laptop's IP
 UDP_PORT = 5005
 starttime = time.time()
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

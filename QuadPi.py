@@ -118,7 +118,8 @@ try:
             # gyro_norm = np.linalg.norm(gyro)
 
             # Update AHRS filter
-            q = madgwick_filter.updateIMU(gyro=gyro, acc=accel)
+            accel_norm = accel / np.linalg.norm(accel)
+            q = madgwick_filter.updateIMU(gyro, accel)
 
             if q is not None:
                 data_dict = dict_writer(addr, bus_num, programtime, q)

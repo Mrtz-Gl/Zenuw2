@@ -1,0 +1,4 @@
+After p14, one missing p was observed, meaning that all ps after 14 should be shifted 1 downwords.
+So p15 is actually p16
+
+no means no glasses, yes means yes glasses

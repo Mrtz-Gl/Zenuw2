@@ -4,11 +4,18 @@ from scipy.spatial.transform import Rotation as R
 
 # --- Constants ---
 ACC_SENSITIVITY_LSB_PER_G = 16384
-GYRO_SENSITIVITY_LSB_PER_DPS = 131
+GYRO_SENSITIVITY_LSB_PER_DPS = 250
 G_TO_MS2 = 9.80665
 
 # --- Load CSV ---
-df = pd.read_csv("csv/p2/p2no/2025-05-28_10-29-48/imu_105_1.csv")
+df = pd.read_csv("csv/p27/p27yes/2025-05-28_16-28-59/imu_105_0.csv")
+
+# --- Fix time direction: only reverse 'programtime' if decreasing ---
+if df['programtime'].is_monotonic_decreasing:
+    df['programtime'] = df['programtime'].iloc[::-1].values
+
+# --- Normalize time to start at 0 ---
+df['programtime'] = df['programtime'] - df['programtime'].min()
 
 # --- Convert acceleration to m/s² ---
 df['ax_mps2'] = df['ax'] / ACC_SENSITIVITY_LSB_PER_G * G_TO_MS2

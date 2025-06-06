@@ -108,7 +108,7 @@ for patient_num in range(1, 35):
                     baseline_window = df.iloc[baseline_start_idx:baseline_end_idx]
                     baseline_time = df['programtime'].iloc[baseline_start_idx]
                     baseline_means = {axis: baseline_window[axis].mean() for axis in ['ax_upright', 'ay_upright', 'az_upright']}
-                    deviation_threshold = 0.4  # m/s²
+                    deviation_threshold = 0.4
 
                     top_peaks_by_axis = {}
                     for axis in ['ax_upright', 'ay_upright', 'az_upright']:
@@ -157,6 +157,8 @@ for patient_num in range(1, 35):
                     movement_end_time = df.loc[movement_end_idx, 'programtime']
 
                     step_interval_df = df[(df['programtime'] >= movement_start_time) & (df['programtime'] <= movement_end_time)]
+                    avg_acc = step_interval_df[['ax_upright', 'ay_upright', 'az_upright']].mean().to_dict()
+
                     refined_peaks_by_axis = {}
                     for axis in ['ax_upright', 'ay_upright', 'az_upright']:
                         baseline = baseline_means[axis]
@@ -178,9 +180,7 @@ for patient_num in range(1, 35):
                         else:
                             refined_peaks_by_axis[axis] = None
 
-                    # === Max Orientation Change Speed per Axis ===
-                    step_gyro_df = df[(df['programtime'] >= movement_start_time) & (df['programtime'] <= movement_end_time)].copy()
-
+                    step_gyro_df = step_interval_df.copy()
                     gyro_max_per_axis = {}
                     for axis in ['gx_upright', 'gy_upright', 'gz_upright']:
                         max_idx = step_gyro_df[axis].abs().idxmax()
@@ -192,7 +192,6 @@ for patient_num in range(1, 35):
                             'time': max_time,
                             'time_from_step_start': delta_t
                         }
-                        print(f"Max {axis} change: {max_val:.2f} °/s at t = {delta_t:.2f}s from step start")
 
                     step_gyro_df['gyro_mag'] = np.sqrt(
                         step_gyro_df['gx_upright']**2 +
@@ -204,75 +203,37 @@ for patient_num in range(1, 35):
                     max_gyro_magnitude = step_gyro_df.loc[max_gyro_idx, 'gyro_mag']
                     time_from_step_start_to_max_gyro = max_gyro_time - movement_start_time
 
-                    print(f"Max overall orientation change speed: {max_gyro_magnitude:.2f} °/s at t = {time_from_step_start_to_max_gyro:.2f}s from step start")
-
-                    start_time = max(0, movement_start_time - 10)
-                    end_time = movement_end_time + 10
-                    df_window = df[(df['programtime'] >= start_time) & (df['programtime'] <= end_time)]
-
-                    # === Acceleration Plot ===
-                    plt.figure(figsize=(12, 6))
-                    colors = {'ax_upright': 'r', 'ay_upright': 'g', 'az_upright': 'b'}
+                    # === METRICS LOGGING ===
+                    metrics_data = {
+                        "patient_id": patient_id,
+                        "intervention_type": intervention_type,
+                        "session": session_name,
+                        "csv_filename": csv_filename,
+                        "step_duration_s": movement_end_time - movement_start_time,
+                        "avg_acc_ax_upright": avg_acc.get('ax_upright', np.nan),
+                        "avg_acc_ay_upright": avg_acc.get('ay_upright', np.nan),
+                        "avg_acc_az_upright": avg_acc.get('az_upright', np.nan)
+                    }
 
                     for axis in ['ax_upright', 'ay_upright', 'az_upright']:
-                        plt.plot(df_window['programtime'], df_window[axis], label=axis, color=colors[axis])
                         peak = refined_peaks_by_axis.get(axis)
-                        if peak is not None and start_time <= peak['time'] <= end_time:
-                            plt.plot(peak['time'], peak['value'], 'kx')
-                            plt.annotate(f"{peak['value']:.2f} m/s²\nΔ={peak['deviation']:.2f}",
-                                         (peak['time'], peak['value']),
-                                         textcoords="offset points", xytext=(0, 10),
-                                         ha='center', fontsize=8, color=colors[axis])
-                            plt.axvline(x=peak['time'], linestyle='--', color=colors[axis], alpha=0.4)
-                            plt.annotate(f"\u0394t = {peak['time_from_baseline']:.2f}s",
-                                         (peak['time'], df_window[axis].min() - 0.5),
-                                         rotation=90, verticalalignment='bottom', fontsize=8, color=colors[axis])
-
-                    plt.axvline(x=baseline_time, linestyle=':', color='gray', label='Baseline')
-                    plt.axvline(x=movement_start_time, linestyle='-.', color='purple', label='Step Start')
-                    plt.axvline(x=movement_end_time, linestyle='-.', color='orange', label='Step End')
-
-                    plt.annotate(f"Step start\n\u0394t = {movement_start_time - baseline_time:.2f}s",
-                                 (movement_start_time, df_window[['ax_upright', 'ay_upright', 'az_upright']].min().min() - 1),
-                                 rotation=90, verticalalignment='bottom', fontsize=9, color='purple')
-
-                    plt.annotate(f"Step end\n\u0394t = {movement_end_time - baseline_time:.2f}s",
-                                 (movement_end_time, df_window[['ax_upright', 'ay_upright', 'az_upright']].min().min() - 1),
-                                 rotation=90, verticalalignment='bottom', fontsize=9, color='orange')
-
-                    plt.title(f"{patient_id} | {session_name} | {csv_filename} - Accel")
-                    plt.xlabel("Time (s)")
-                    plt.ylabel("Acceleration (m/s²)")
-                    plt.legend()
-                    plt.grid(True)
-                    plt.tight_layout()
-                    plt.show()
-
-                    # === Gyroscope Plot ===
-                    plt.figure(figsize=(12, 5))
-                    colors_gyro = {'gx_upright': 'r', 'gy_upright': 'g', 'gz_upright': 'b'}
+                        metrics_data[f"max_acc_{axis}"] = peak['value'] if peak else np.nan
+                        metrics_data[f"time_to_max_acc_{axis}"] = peak['time_from_baseline'] if peak else np.nan
 
                     for axis in ['gx_upright', 'gy_upright', 'gz_upright']:
-                        plt.plot(df_window['programtime'], df_window[axis], label=axis, color=colors_gyro[axis])
+                        gyro = gyro_max_per_axis.get(axis)
+                        metrics_data[f"max_ang_vel_{axis}"] = gyro['value'] if gyro else np.nan
+                        metrics_data[f"time_to_max_ang_vel_{axis}"] = gyro['time_from_step_start'] if gyro else np.nan
 
-                        peak_info = gyro_max_per_axis[axis]
-                        if start_time <= peak_info['time'] <= end_time:
-                            plt.axvline(x=peak_info['time'], linestyle='--', color=colors_gyro[axis], alpha=0.4)
-                            plt.plot(peak_info['time'], peak_info['value'], 'kx')
-                            plt.annotate(
-                                f"{axis[-2:].upper()} max\n{peak_info['value']:.2f}°/s\nΔt={peak_info['time_from_step_start']:.2f}s",
-                                (peak_info['time'], peak_info['value']),
-                                textcoords="offset points", xytext=(0, 10), ha='center',
-                                fontsize=8, color=colors_gyro[axis]
-                            )
+                    metrics_df = pd.DataFrame([metrics_data])
 
-                    plt.title(f"{patient_id} | {session_name} | {csv_filename} - Gyro")
-                    plt.xlabel("Time (s)")
-                    plt.ylabel("Angular Velocity (\u00b0/s)")
-                    plt.legend()
-                    plt.grid(True)
-                    plt.tight_layout()
-                    plt.show()
+                    # Only write if not all key metrics are zero or NaN
+                    if not metrics_df.replace(0, np.nan).dropna(how='all', axis=1).empty:
+                        metrics_file = "metrics_summary2.csv"
+                        if not os.path.isfile(metrics_file):
+                            metrics_df.to_csv(metrics_file, index=False)
+                        else:
+                            metrics_df.to_csv(metrics_file, mode='a', header=False, index=False)
 
                 except Exception as e:
                     print(f"Error processing {csv_path}: {e}")
